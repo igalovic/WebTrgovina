@@ -13,6 +13,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using API.Helpers;
+using AutoMapper;
 
 namespace API
 {
@@ -29,6 +31,8 @@ namespace API
         public void ConfigureServices(IServiceCollection services) //add to service so we can use it in other parts of application
         {
             services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped(typeof(IGenericRepository<>),(typeof(GenericRepository<>)));
+            services.AddAutoMapper(typeof(MappingProfiles));
             services.AddControllers();
             services.AddDbContext<StoreContext>(x => x.UseSqlite(_config.GetConnectionString("DefaultConnection"))); //GetConnectionString - Shorthand for GetSection("ConnectionStrings")[name]. Drzi context aktivnom dok god je aktivan http request s atributom scope
         }
@@ -44,6 +48,7 @@ namespace API
             app.UseHttpsRedirection();
 
             app.UseRouting();
+            app.UseStaticFiles(); //prepoznavanje slika koje ce vracati api putem linka. Sve u ovoj metodi(Configure) su middlewari 
 
             app.UseAuthorization();
 
