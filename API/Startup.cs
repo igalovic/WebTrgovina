@@ -15,7 +15,7 @@ namespace API
             _config = config;
         }
 
-
+        //Cross origin resource sharing support
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services) //add to service so we can use it in other parts of application
         {
@@ -26,6 +26,13 @@ namespace API
 
             services.AddApplicationServices();
             services.AddSwaggerDocumentation();
+            services.AddCors(opt => 
+            {
+                opt.AddPolicy("CorsPolicy", policy =>
+                {
+                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200"); //origin that we are allowed to access to resources from 
+                });
+            });
            
         }
 
@@ -42,6 +49,8 @@ namespace API
 
             app.UseRouting();
             app.UseStaticFiles(); //prepoznavanje slika koje ce vracati api putem linka. Sve u ovoj metodi(Configure) su middlewari 
+
+            app.UseCors("CorsPolicy");
 
             app.UseAuthorization();
 
