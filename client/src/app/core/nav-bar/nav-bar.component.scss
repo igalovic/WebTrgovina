@@ -12,7 +12,20 @@
 }
 a{
     margin-right: 10px;
+    text-decoration: none;
+    color: #343a40;
+
+    &.active{
+        color: orange;
+    }
 }
 a.position-relative{
     margin-right: 60px;
+}
+
+.logo{
+    cursor: pointer;
+    &:focus{
+        outline: none;
+    }
 }
