@@ -4,6 +4,7 @@ using API.Helpers;
 using AutoMapper;
 using API.Middleware;
 using API.Extensions;
+using StackExchange.Redis;
 
 namespace API
 {
@@ -23,6 +24,12 @@ namespace API
             services.AddAutoMapper(typeof(MappingProfiles));
             services.AddControllers();
             services.AddDbContext<StoreContext>(x => x.UseSqlite(_config.GetConnectionString("DefaultConnection"))); //GetConnectionString - Shorthand for GetSection("ConnectionStrings")[name]. Drzi context aktivnom dok god je aktivan http request s atributom scope
+
+            services.AddSingleton<IConnectionMultiplexer>(c=>{
+                var configuration  = ConfigurationOptions.Parse(_config.GetConnectionString("Redis"),
+                true);
+                return ConnectionMultiplexer.Connect(configuration);
+            });
 
             services.AddApplicationServices();
             services.AddSwaggerDocumentation();
